@@ -6,9 +6,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import ru.geekbrains.main.site.at.base.BaseTest;
 
 public class SearchTest extends BaseTest {
+
 //    Перейти на сайт https://geekbrains.ru/courses
 //    Нажать на кнопку Поиск
 //    В поле Поиск ввести текст: java

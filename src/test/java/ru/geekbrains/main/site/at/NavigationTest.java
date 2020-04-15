@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.geekbrains.main.site.at.base.BaseTest;
 
 public class NavigationTest extends BaseTest {
     //    Перейти на сайт https://geekbrains.ru/courses
