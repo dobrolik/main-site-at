@@ -23,7 +23,7 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.6.1</version>
         </dependency>
-        <dependency>
+       <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <version>2.2</version>
