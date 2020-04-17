@@ -1,4 +1,4 @@
-package ru.geekbrains.main.site.at;
+package ru.geekbrains.main.site.at.base;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
