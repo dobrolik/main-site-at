@@ -1,10 +1,13 @@
 package ru.geekbrains.main.site.at;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import ru.geekbrains.main.site.at.base.BaseTest;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
 
 public class NavigationTest extends BaseTest {
     //    Перейти на сайт https://geekbrains.ru/courses
@@ -18,11 +21,9 @@ public class NavigationTest extends BaseTest {
 //    Тесты
 //    Карьера
 
-
-     //Курсы
-    @Test
-    void CheckCourses() throws InterruptedException {
-        driver.get("https://geekbrains.ru/career");
+    @ParameterizedTest
+    @ValueSource(strings = "Курсы")
+    void checkCourses(String expected) throws InterruptedException{
 
         WebElement buttonCourses = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/courses\"]"));
         buttonCourses.click();
@@ -30,83 +31,63 @@ public class NavigationTest extends BaseTest {
         driver.findElement(By.cssSelector("div button svg[class=\"svg-icon icon-popup-close-button \"]")).click();
 
         WebElement headerPageCourses = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Курсы", headerPageCourses.getText());
-
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
+        assertThat(headerPageCourses.getText(), equalToCompressingWhiteSpace(expected));
     }
 
-    //Вебинары
-    //Здесь непонятно, как отследить появление всплывающего окна, закономерность уловить не удалось.
-    //Два типа всплывающих окон:
-    // 1) Окно с разрешением отправлять уведомления и что-то о подписке. Отследил, добавил в код под коментом.
-    // 2) Приглашение к бесплатной регистрации
-
-    @Test
-    void CheckEvents() throws InterruptedException {
-        driver.get("https://geekbrains.ru/career");
+    @ParameterizedTest
+    @ValueSource(strings = "Вебинары")
+    void checkEvents(String expected) throws InterruptedException {
 
         WebElement buttonEvents = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/events\"]"));
         buttonEvents.click();
 
         WebElement headerPageEvents = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Вебинары", headerPageEvents.getText());
+        assertThat(headerPageEvents.getText(), equalToCompressingWhiteSpace(expected));
 
- //       driver.findElement(By.cssSelector("button[class=close]")).click();
- //       driver.findElement(By.cssSelector("button[class=_2c86]")).click();
- //       driver.findElement(By.cssSelector("[class*=\"popup-close-button\"]")).click();
-
-        WebElement headerPageEventsActions = driver.findElement(By.cssSelector("a[href =\"/register\"]"));
-        Assertions.assertEquals(" Регистрация", headerPageEventsActions.getText());
-
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
     }
 
-    //Форум
-    @Test
-    void CheckTopics() {
-        driver.get("https://geekbrains.ru/career");
+    @ParameterizedTest
+    @ValueSource(strings = "Форум")
+    void checkTopics(String expected) throws InterruptedException {
+
         WebElement buttonTopics = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/topics\"]"));
         buttonTopics.click();
+
         WebElement headerPageTopics = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Форум", headerPageTopics.getText());
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
+        assertThat(headerPageTopics.getText(), equalToCompressingWhiteSpace(expected));
+
     }
 
-    //Блог
-    @Test
-    void CheckPosts() {
-        driver.get("https://geekbrains.ru/career");
+    @ParameterizedTest
+    @ValueSource(strings = "Блог")
+    void checkPosts(String expected) throws InterruptedException {
+
         WebElement buttonPosts = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/posts\"]"));
         buttonPosts.click();
+
         WebElement headerPagePosts = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Блог", headerPagePosts.getText());
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
+        assertThat(headerPagePosts.getText(), equalToCompressingWhiteSpace(expected));
     }
 
-    //Тесты
-    @Test
-    void CheckTests() {
-        driver.get("https://geekbrains.ru/career");
+    @ParameterizedTest
+    @ValueSource(strings = "Тесты")
+    void checkTests(String expected) throws InterruptedException {
+
         WebElement buttonTests = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/tests\"]"));
         buttonTests.click();
+
         WebElement headerPageTests = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Тесты", headerPageTests.getText());
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
+        assertThat(headerPageTests.getText(), equalToCompressingWhiteSpace(expected));
     }
-    //Карьера
-    @Test
-    void CheckCareer() {
-        driver.get("https://geekbrains.ru/career");
+
+    @ParameterizedTest
+    @ValueSource(strings = "Карьера")
+    void checkCareer(String expected) throws InterruptedException {
+
         WebElement buttonCareer = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/career\"]"));
         buttonCareer.click();
+
         WebElement headerPageCareer = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Карьера", headerPageCareer.getText());
-        WebElement footerPageCourses = driver.findElement(By.cssSelector("a[class*=\"site-footer__phone\"]"));
-        Assertions.assertEquals("8 800 700-68-41", footerPageCourses.getText());
+        assertThat(headerPageCareer.getText(), equalToCompressingWhiteSpace(expected));
     }
 }
