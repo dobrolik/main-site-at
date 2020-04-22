@@ -1,93 +1,58 @@
 package ru.geekbrains.main.site.at;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.openqa.selenium.support.PageFactory;
 import ru.geekbrains.main.site.at.base.BaseTest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import java.util.stream.Stream;
 
+@DisplayName("Проверка блока навигации")
 public class NavigationTest extends BaseTest {
-    //    Перейти на сайт https://geekbrains.ru/courses
-//    Нажать на кнопку Курсы
-//    Проверить что страница Курсы открылась
-//    Повторить для
-//    Курсы
-//    Вебинары
-//    Форум
-//    Блог
-//    Тесты
-//    Карьера
 
-    @ParameterizedTest
-    @ValueSource(strings = "Курсы")
-    void checkCourses(String expected) throws InterruptedException{
-
-        WebElement buttonCourses = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/courses\"]"));
-        buttonCourses.click();
-
-        driver.findElement(By.cssSelector("div button svg[class=\"svg-icon icon-popup-close-button \"]")).click();
-
-        WebElement headerPageCourses = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPageCourses.getText(), equalToCompressingWhiteSpace(expected));
+    public static Stream<String> stringProvider() {
+        return Stream.of("Курсы", "Вебинары", "Форум", "Блог", "Тесты", "Карьера");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = "Вебинары")
-    void checkEvents(String expected) throws InterruptedException {
+    @DisplayName("Проверка после нажатия в панели навигации")
+    @ParameterizedTest(name = "проверка: {0}")
+    @MethodSource("stringProvider")
+    void checkNavigation(String namePage) throws InterruptedException {
+        driver.get("https://geekbrains.ru/career");
 
-        WebElement buttonEvents = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/events\"]"));
-        buttonEvents.click();
+        PageFactory.initElements(driver, Page.class)
+                .getNavigation().clickButton(namePage)
+                .checkHeaderTitle(namePage);
 
-        WebElement headerPageEvents = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPageEvents.getText(), equalToCompressingWhiteSpace(expected));
+//                .getNavigation().clickButton("Вебинары")
+//                .checkHeaderTitle("Вебинары")
+//                .getNavigation().clickButton("Форум")
+//                .checkHeaderTitle("Форум")
+//                .getNavigation().clickButton("Блог")
+//                .checkHeaderTitle("Блог")
+//                .getNavigation().clickButton("Тесты")
+//                .checkHeaderTitle("Тесты")
+//                .getNavigation().clickButton("Карьера")
+//                .checkHeaderTitle("Карьера");
 
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = "Форум")
-    void checkTopics(String expected) throws InterruptedException {
-
-        WebElement buttonTopics = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/topics\"]"));
-        buttonTopics.click();
-
-        WebElement headerPageTopics = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPageTopics.getText(), equalToCompressingWhiteSpace(expected));
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = "Блог")
-    void checkPosts(String expected) throws InterruptedException {
-
-        WebElement buttonPosts = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/posts\"]"));
-        buttonPosts.click();
-
-        WebElement headerPagePosts = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPagePosts.getText(), equalToCompressingWhiteSpace(expected));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = "Тесты")
-    void checkTests(String expected) throws InterruptedException {
-
-        WebElement buttonTests = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/tests\"]"));
-        buttonTests.click();
-
-        WebElement headerPageTests = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPageTests.getText(), equalToCompressingWhiteSpace(expected));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = "Карьера")
-    void checkCareer(String expected) throws InterruptedException {
-
-        WebElement buttonCareer = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/career\"]"));
-        buttonCareer.click();
-
-        WebElement headerPageCareer = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        assertThat(headerPageCareer.getText(), equalToCompressingWhiteSpace(expected));
+//        Navigation navigation = PageFactory.initElements(driver, Navigation.class);
+//        Page page = PageFactory.initElements(driver, Page.class);
+//
+//        page.getNavigation().clickButton("Курсы");
+//        page.checkHeaderTitle("Курсы");
+//
+//        page.getButtonClosePopUP().click();
+//
+//        page.getNavigation().clickButton("Вебинары");
+//        page.checkHeaderTitle("Вебинары");
+//        page.getNavigation().clickButton("Форум");
+//        page.checkHeaderTitle("Форум");
+//        page.getNavigation().clickButton("Блог");
+//        page.checkHeaderTitle("Блог");
+//        page.getNavigation().clickButton("Тесты");
+//        page.checkHeaderTitle("Тесты");
+//        page.getNavigation().clickButton("Карьера");
+//        page.checkHeaderTitle("Карьера");
     }
 }
