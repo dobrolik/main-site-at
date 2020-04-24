@@ -1,12 +1,10 @@
 package ru.geekbrains.main.site.at.example.annot;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ru.geekbrains.main.site.at.base.BaseTest;
-
-import org.junit.jupiter.api.*;
 
 class StandardTest extends BaseTest {
 
@@ -39,11 +37,11 @@ class StandardTest extends BaseTest {
 //    @Disabled("for demonstration purposes")
 //    void skippedTest() {
 //    }
-
-    @AfterEach
-    void tearDown() {
-        System.out.println("tearDown");
-    }
+//
+//    @AfterEach
+//    void tearDown() {
+//        System.out.println("tearDown");
+//    }
 
     @AfterAll
     static void tearDownAll() {

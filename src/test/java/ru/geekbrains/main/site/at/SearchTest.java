@@ -1,106 +1,61 @@
 package ru.geekbrains.main.site.at;
 
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.openqa.selenium.support.PageFactory;
 import ru.geekbrains.main.site.at.base.BaseTest;
+import ru.geekbrains.main.site.at.career.CareerPage;
+import ru.geekbrains.main.site.at.common.Search;
 
-import java.util.List;
+import java.util.stream.Stream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchTest extends BaseTest {
 
-//    Перейти на сайт https://geekbrains.ru/courses
-//    Нажать на кнопку Поиск
-//    В поле Поиск ввести текст: java
-//    Проверить что отобразились блоки:
-//            Профессии
-//            Курсы
-//            Вебинары
-//            Блоги
-//            Форум
-//            Тесты
-//            Проекты и компании
+    private Search searchPage;
 
-    @Test
-    void serchJava() {
+    @BeforeAll
+    protected void setUp() {
+        super.setUpDriver();
         driver.get("https://geekbrains.ru/career");
-
-        driver.findElement(By.cssSelector("[class*=\"popup-close-button\"]")).click();
-
-        WebElement buttonSearch = driver.findElement(By.cssSelector("[id=\"top-menu\"] [class=\"show-search-form\"] svg"));
-        buttonSearch.click();
-
-        WebElement inputSearch = driver.findElement(By.cssSelector("input[class=\"search-panel__search-field\"]"));
-        inputSearch.sendKeys("java");
-
-        WebElement textProfession = driver.findElement(By.xpath("//header/h2[text()='Профессии']"));
-        WebElement textCourses = driver.findElement(By.xpath("//header/h2[text()='Курсы']"));
-        WebElement textWebinars = driver.findElement(By.xpath("//header/h2[text()='Вебинары']"));
-        WebElement textBlogs = driver.findElement(By.xpath("//header/h2[text()='Блоги']"));
-        WebElement textForum = driver.findElement(By.xpath("//header/h2[text()='Форум']"));
-        WebElement textTests = driver.findElement(By.xpath("//header/h2[text()='Тесты']"));
-        WebElement textProjectsAndCompanies = driver.findElement(By.xpath("//header/h2[text()='Проекты и компании']"));
+        searchPage = PageFactory.initElements(driver, CareerPage.class)
+                .getHeader().clickSearch()
+                .enterTextToSearch("Java");
+    }
 
 
-        WebDriverWait wait = new WebDriverWait(driver, 40);
-//
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Профессии']"),"Профессии"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Курсы']"),"Курсы"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Вебинары']"),"Вебинары"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Блоги']"),"Блоги"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Форум']"),"Форум"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Тесты']"),"Тесты"));
-//        wait.until(ExpectedConditions.textToBe(By.xpath("//header/h2[text()='Проекты и компании']"),"Проекты и компании"));
-//
-        wait.until(ExpectedConditions.textToBePresentInElement(textProfession, "Профессии"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textCourses, "Курсы"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textWebinars, "Вебинары"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textBlogs, "Блоги"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textForum, "Форум"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textTests, "Тесты"));
-        wait.until(ExpectedConditions.textToBePresentInElement(textProjectsAndCompanies, "Проекты и компании"));
+    @DisplayName("Проверка элементов")
+    @ParameterizedTest(name = "{index} ==> Блок \"{0}\" шаг \" {1}\"")
+    @MethodSource("stringProviderWithMatch")
 
+    void checkSearchResult(String elementName, Matcher matcher) {
+        searchPage.checkElement(elementName, matcher);
+    }
 
-//        Assertions.assertEquals("Курсы", textCourses.getText());
-//        Assertions.assertEquals("Вебинары", textWebinars.getText());
-//        Assertions.assertEquals("Блоги", textBlogs.getText());
-//        Assertions.assertEquals("Форум", textForum.getText());
-//        Assertions.assertEquals("Тесты", textTests.getText());
-//        Assertions.assertEquals("Проекты и компании", textProjectsAndCompanies.getText());
+    Stream<Arguments> stringProviderWithMatch() {
+        return Stream.of(
+                Arguments.of("Профессии", greaterThanOrEqualTo(2)),
+                Arguments.of("Курсы", greaterThan(15)),
+                Arguments.of("Вебинары", allOf(
+                        greaterThan(180),
+                        lessThan(300)
+                )),
+                Arguments.of("Блоги", greaterThan(300)),
+                Arguments.of("Форум", not(350)),
+                Arguments.of("Тесты", not(0)),
+                Arguments.of("Geekbrains", is(true))
+        );
+    }
 
-        //Профессий не меньше, чем 2
-        ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[2]/a/span"), 2);
-        //Курсов более 15
-        ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[3]/a/span"), 15);
-        //Вебинаров больше чем 180, но меньше 300
-        WebElement numberOfEvents = driver.findElement(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[4]/a/span"));
-        assertThat(Integer.parseInt(numberOfEvents.getText()), allOf(greaterThan(180), lessThan(300)));
-        //Блогов более 300
-        ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[5]/a/span"), 300);
-        //Форумов не 350
-        WebElement numberOfForum = driver.findElement(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[6]/a/span"));
-        Assertions.assertNotEquals(350, Integer.parseInt(numberOfForum.getText()));
-
-        //Тестов не 0
-        WebElement numberOfTests = driver.findElement(By.xpath("/html/body/div[1]/div[7]/div/div[1]/div/ul/li[7]/a/span"));
-        Assertions.assertNotNull(Integer.parseInt(numberOfTests.getText()));
-
-        //В проектах и компаниях отображается GeekBrains
-        By mySelector = By.cssSelector("h3 > a");
-        List<WebElement> geekElements = driver.findElements(mySelector);
-        for (WebElement e : geekElements) {
-            String element = e.getText();
-            if (element.contains("Geek")) break;
-        }
-
+    @AfterAll
+    protected void tearDown() {
+        super.tearDown();
     }
 
 }

@@ -1,5 +1,7 @@
 package ru.geekbrains.main.site.at;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,19 +13,25 @@ import java.util.stream.Stream;
 @DisplayName("Проверка блока навигации")
 public class NavigationTest extends BaseTest {
 
+    @BeforeEach
+    protected void SetUp(){
+        super.setUpDriver();
+        driver.get("https://geekbrains.ru/career");
+    }
+
     public static Stream<String> stringProvider() {
         return Stream.of("Курсы", "Вебинары", "Форум", "Блог", "Тесты", "Карьера");
     }
 
-    @DisplayName("Проверка после нажатия в панели навигации")
+    @DisplayName("Проверка соответсвия header после нажатия в панели навигации")
     @ParameterizedTest(name = "проверка: {0}")
     @MethodSource("stringProvider")
     void checkNavigation(String namePage) throws InterruptedException {
-        driver.get("https://geekbrains.ru/career");
 
         PageFactory.initElements(driver, Page.class)
                 .getNavigation().clickButton(namePage)
                 .checkHeaderTitle(namePage);
+
 
 //                .getNavigation().clickButton("Вебинары")
 //                .checkHeaderTitle("Вебинары")
@@ -54,5 +62,10 @@ public class NavigationTest extends BaseTest {
 //        page.checkHeaderTitle("Тесты");
 //        page.getNavigation().clickButton("Карьера");
 //        page.checkHeaderTitle("Карьера");
+    }
+
+    @AfterEach
+    protected void tearDown(){
+        super.tearDown();
     }
 }
