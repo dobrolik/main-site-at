@@ -1,6 +1,8 @@
 package ru.geekbrains.main.site.at;
 
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +22,7 @@ public class SearchTest extends BaseTest {
 
     private Search searchPage;
 
+    @Step("Открытие страницы и ввод в поиске Java")
     @BeforeAll
     protected void setUp() {
         super.setUpDriver();
@@ -30,7 +33,7 @@ public class SearchTest extends BaseTest {
     }
 
 
-    @DisplayName("Проверка элементов")
+    @Description("Проверка элементов")
     @ParameterizedTest(name = "{index} ==> Блок \"{0}\" шаг \" {1}\"")
     @MethodSource("stringProviderWithMatch")
 

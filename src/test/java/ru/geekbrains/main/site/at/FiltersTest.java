@@ -1,5 +1,7 @@
 package ru.geekbrains.main.site.at;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
 public class FiltersTest extends BaseTest {
     private CoursesPage coursesPage;
 
+    @Step("Открытие страницы, авторизация, переход и нажатие чек-боксов")
     @BeforeAll
     protected void SetUp(){
         super.setUpDriver();
@@ -31,7 +34,7 @@ public class FiltersTest extends BaseTest {
                 .clickCheckbox("Тестирование");
     }
 
-    @DisplayName("Проверка результатов фильтрации")
+    @Description("Проверка результатов фильтрации на странице https://geekbrains.ru/courses")
     @ParameterizedTest(name = "{index} ==> Отобразилось: \"{0}\"")
     @MethodSource("stringProvider")
     void checkMain(String courseName){

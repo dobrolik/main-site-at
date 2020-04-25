@@ -17,9 +17,9 @@ public class BaseTest {
 
         ChromeOptions options = new ChromeOptions();
 //        options.addArguments("incognito");
+        driver.manage().window().maximize();
         options.addArguments("--disable-popup-blocking");
 //        options.setExperimentalOption("excludeSwitches", Collections.singletonList("disable-popup-blocking"));
-//        options.setPageLoadStrategy(PageLoadStrategy.NONE);
 //        options.addArguments("--disable-infobars");
 //        options.addArguments("--disable-dev-shm-usage");
 //        options.addArguments("--disable-browser-side-navigation");
