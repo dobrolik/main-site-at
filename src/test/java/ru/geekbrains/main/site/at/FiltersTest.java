@@ -1,55 +1,34 @@
 package ru.geekbrains.main.site.at;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Step;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.support.PageFactory;
-import ru.geekbrains.main.site.at.base.BaseTest;
-import ru.geekbrains.main.site.at.courses.CoursesPage;
-import ru.geekbrains.main.site.at.pages.AuthPage;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import ru.geekbrains.main.site.at.base.BeforeAndAfterStep;
+import ru.geekbrains.main.site.at.page.content.CoursePage;
+import ru.geekbrains.main.site.at.block.LeftNavigation;
 
-import java.util.stream.Stream;
+@Execution(ExecutionMode.CONCURRENT)
+@DisplayName("Страница Курсы")
+public class FiltersTest extends BeforeAndAfterStep {
 
-@DisplayName("Проверка фильтров")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FiltersTest extends BaseTest {
-    private CoursesPage coursesPage;
+    @DisplayName("Проверка работы фильтров")
+    @Test
+    void checkSingInValidLogin() {
+        ((CoursePage)
 
-    @Step("Открытие страницы, авторизация, переход и нажатие чек-боксов")
-    @BeforeAll
-    protected void SetUp(){
-        super.setUpDriver();
-        driver.get("https://geekbrains.ru/login");
-        coursesPage = PageFactory.initElements(driver, AuthPage.class)
-                .loginAsCustomer("hao17583@bcaoo.com", "hao17583")
-                .getSidebar().clickCourses()
-                .getHeader().checkTitle("Курсы")
-                .clickNavCourses()
-                .clickCheckbox("Бесплатные")
-                .clickCheckbox("Тестирование");
-    }
+                new CoursePage(driver)
+                        .openUrl()
+                        .closedPopUp()
+                        .getLeftNavigation()
+                        .clickButton("Курсы"))
+                .getContentNavigationCourseBlock().click("Курсы")
+                .configFilter("Бесплатные", "Тестирование")
+                .checkingDisplayedCourses(
+                        "Тестирование ПО. Уровень 1",
+                        "Тестирование ПО. Уровень 2"
+                )
+        ;
 
-    @Description("Проверка результатов фильтрации на странице https://geekbrains.ru/courses")
-    @ParameterizedTest(name = "{index} ==> Отобразилось: \"{0}\"")
-    @MethodSource("stringProvider")
-    void checkMain(String courseName){
-        coursesPage.checkCoursesForText(courseName);
-    }
-
-    static Stream<String> stringProvider(){
-        return Stream.of(
-                "Тестирование ПО. Уровень 1",
-                "Тестирование ПО. Уровень 2"
-        );
-    }
-
-    @AfterAll
-    protected void tearDown(){
-        super.tearDown();
     }
 }

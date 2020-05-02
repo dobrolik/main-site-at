@@ -1,34 +1,26 @@
 package ru.geekbrains.main.site.at;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Step;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.support.PageFactory;
-import ru.geekbrains.main.site.at.base.BaseTest;
-import ru.geekbrains.main.site.at.pages.AuthPage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import ru.geekbrains.main.site.at.base.BeforeAndAfterStep;
+import ru.geekbrains.main.site.at.page.AuthorizationPage;
 
+@Execution(ExecutionMode.CONCURRENT)
 @DisplayName("Проверка авторизации")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AuthTest extends BaseTest {
+public class AuthTest extends BeforeAndAfterStep {
 
-    @Step("Открыть https://geekbrains.ru/login")
-    @BeforeAll
-    protected void SetUp(){
-        super.setUpDriver();
-        driver.get("https://geekbrains.ru/login");
-    }
-
-    @Description("Проверка авторизации на https://geekbrains.ru/login")
-    @DisplayName("Проверка \"Главная\"")
+    @DisplayName("Вход с валидный логин/пароль")
     @Test
-    void checkMain(){
-        PageFactory.initElements(driver, AuthPage.class)
-                .loginAsCustomer("hao17583@bcaoo.com", "hao17583")
-                .getHeader().checkTitle("Главная");
+    void checkSingInValidLogin() {
+        String login = "hao17583@bcaoo.com";
+        String password = "hao17583";
+
+        new AuthorizationPage(driver)
+                .openUrl()
+                .authorization(login, password)
+                .checkNamePage("Главная");
     }
 
-    @AfterAll
-    protected void tearDown(){
-        super.tearDown();
-    }
 }

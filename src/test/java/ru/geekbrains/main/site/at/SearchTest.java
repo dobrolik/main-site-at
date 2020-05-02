@@ -1,64 +1,36 @@
 package ru.geekbrains.main.site.at;
 
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Step;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.support.PageFactory;
-import ru.geekbrains.main.site.at.base.BaseTest;
-import ru.geekbrains.main.site.at.career.CareerPage;
-import ru.geekbrains.main.site.at.common.Search;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import ru.geekbrains.main.site.at.base.BeforeAndAfterStep;
+import ru.geekbrains.main.site.at.block.SearchTabsBlock;
+import ru.geekbrains.main.site.at.page.content.CoursePage;
+import ru.geekbrains.main.site.at.page.content.SearchPage;
+import ru.geekbrains.main.site.at.page.content.TestPage;
 
-import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SearchTest extends BaseTest {
+@Execution(ExecutionMode.CONCURRENT)
+@DisplayName("Проверка работы Поиска")
+public class SearchTest extends BeforeAndAfterStep {
 
-    private Search searchPage;
-
-    @Step("Открытие страницы и ввод в поиске Java")
-    @BeforeAll
-    protected void setUp() {
-        super.setUpDriver();
-        driver.get("https://geekbrains.ru/career");
-        searchPage = PageFactory.initElements(driver, CareerPage.class)
-                .getHeader().clickSearch()
-                .enterTextToSearch("Java");
+    @DisplayName("Проверка Поиска")
+    @Test
+    void searchTest() {
+        new TestPage(driver)
+                .openUrl()
+                .getHeader()
+                .searchText("java")
+                .getSearchTabsBlock()
+                .checkCount(SearchTabsBlock.Tab.Professions,greaterThanOrEqualTo(2))
+                .checkCount(SearchTabsBlock.Tab.Courses,greaterThan(15))
+                .checkCount(SearchTabsBlock.Tab.Webinars,allOf(greaterThan(180), lessThan(300)))
+                .checkCount(SearchTabsBlock.Tab.Blogs,greaterThan(300))
+                .checkCount(SearchTabsBlock.Tab.Forums,not(350))
+                .checkCount(SearchTabsBlock.Tab.Tests,not(0));
     }
-
-
-    @Description("Проверка элементов")
-    @ParameterizedTest(name = "{index} ==> Блок \"{0}\" шаг \" {1}\"")
-    @MethodSource("stringProviderWithMatch")
-
-    void checkSearchResult(String elementName, Matcher matcher) {
-        searchPage.checkElement(elementName, matcher);
-    }
-
-    Stream<Arguments> stringProviderWithMatch() {
-        return Stream.of(
-                Arguments.of("Профессии", greaterThanOrEqualTo(2)),
-                Arguments.of("Курсы", greaterThan(15)),
-                Arguments.of("Вебинары", allOf(
-                        greaterThan(180),
-                        lessThan(300)
-                )),
-                Arguments.of("Блоги", greaterThan(300)),
-                Arguments.of("Форум", not(350)),
-                Arguments.of("Тесты", not(0)),
-                Arguments.of("Geekbrains", is(true))
-        );
-    }
-
-    @AfterAll
-    protected void tearDown() {
-        super.tearDown();
-    }
-
 }
