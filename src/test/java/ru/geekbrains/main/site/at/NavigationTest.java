@@ -1,66 +1,34 @@
 package ru.geekbrains.main.site.at;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import ru.geekbrains.main.site.at.base.BaseTest;
+import io.qameta.allure.Feature;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import ru.geekbrains.main.site.at.base.BeforeAndAfterStep;
+import ru.geekbrains.main.site.at.page.content.TestPage;
 
-public class NavigationTest extends BaseTest {
-    //    Перейти на сайт https://geekbrains.ru/courses
-//    Нажать на кнопку Курсы
-//    Проверить что страница Курсы открылась
-//    Повторить для
-//    Курсы
-//            Вебинары
-//    Форум
-//            Блог
-//    Тесты
-//            Карьера
+import java.util.stream.Stream;
 
+@Execution(ExecutionMode.CONCURRENT)
+@DisplayName("Проверка навигации")
+@Feature("Проверка навигации")
+public class NavigationTest extends BeforeAndAfterStep {
 
-    @Test
-    void checkNavigation() throws InterruptedException {
-        driver.get("https://geekbrains.ru/career");
+    static Stream<String> stringProvider() {
+        return Stream.of(
+                "Курсы", "Вебинары", "Форум", "Блог", "Тесты", "Карьера");
+    }
 
-        //Курсы
-        WebElement buttonCourses = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/courses\"]"));
-        buttonCourses.click();
-        WebElement headerPageCourses = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Курсы", headerPageCourses.getText());
-
-
-        driver.findElement(By.cssSelector("div button svg[class=\"svg-icon icon-popup-close-button \"]")).click();
-
-
-        //Вебинары
-        WebElement buttonEvents = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/events\"]"));
-        buttonEvents.click();
-        WebElement headerPageEvents = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Вебинары", headerPageEvents.getText());
-        //Форум
-        WebElement buttonTopics = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/topics\"]"));
-        buttonTopics.click();
-        WebElement headerPageTopics = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Форум", headerPageTopics.getText());
-        //Блог
-//        href="/posts"
-        WebElement buttonPosts = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/posts\"]"));
-        buttonPosts.click();
-        WebElement headerPagePosts = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Блог", headerPagePosts.getText());
-        //Тесты
-//        href="/tests"
-        WebElement buttonTests = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/tests\"]"));
-        buttonTests.click();
-        WebElement headerPageTests = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Тесты", headerPageTests.getText());
-        //Карьер
-//        href="/career"
-        WebElement buttonCareer = driver.findElement(By.cssSelector("[class*=\"main-page-hidden\"] [href=\"/career\"]"));
-        buttonCareer.click();
-        WebElement headerPageCareer = driver.findElement(By.cssSelector("[class=\"gb-header__title\"]"));
-        Assertions.assertEquals("Карьера", headerPageCareer.getText());
+    @DisplayName("Нажатие в навигации")
+    @ParameterizedTest(name = "{index} => переход на страницу {0}")
+    @MethodSource("stringProvider")
+    void checkNavigation(String namePage) {
+        new TestPage(driver)
+                .openUrl()
+                .getLeftNavigation().clickButton(namePage)
+                .getHeader().checkNamePage(namePage);
     }
 
 }
